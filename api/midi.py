@@ -1,8 +1,19 @@
 import mido
 from mido import Message
 from mido import MidiFile
+import dictionary
+import random
 
 
+def notes_by_track_number(mid, n):
+	lyrics_track = mid.tracks[n]
+	current_time = 0
+	notes = []
+	for msg in lyrics_track:
+		current_time += msg.time
+		note = Note(msg, current_time)
+		notes.append(note)
+	return notes
 
 def lyrics_tracks(mid):
 	return [track for track in mid.tracks if has_lyrics(track)]
@@ -40,6 +51,7 @@ class Note(object):
 		self.type = msg.type
 		self.midicode = ''
 		self.velocity = ''
+		# TODO: add duration
 		self.text = ''
 
 		if not msg.is_meta:
@@ -82,6 +94,98 @@ class Note(object):
 		return " ".join([str(self.timecode), self.type, str(self.midicode), str(self.velocity), self.text])
 
 
+def process_midifile(filename):
+	filepath = 'midifiles/%s' % filename
+	mid = MidiFile(filepath)
+	notes = [str(n) for n in notes_by_track_number(mid,3)]
+	outpath = 'melodies/%s' % filename.split('.')[0]
+	with open(outpath, 'w') as f:
+		for note in notes:
+			f.write(str(note)+'\n')
+
+# return a list of likely next tokens given a context
+# context is a list of Note objects that occurred in sequence
+# return value is a list of tuples linking Notes to scores which represent their likelihood
+def possible_continuations(history, ngram_dict):
+	return dictionary.normalize(ngram_dict[history])
+
+
+def next_note(history, ngram_dict):
+	return dictionary.stochastic_choice(possible_continuations(history, ngram_dict))[0]
+
+	
+
+"""
+def ngram_dictionary(note_list, n):
+	ng_dict = {}
+
+	for start in range(len(note_list)):
+		end = start+n-1
+
+		ngram = " ".join([str(note.midicode) for note in note_list[start:end+1]])
+
+		if ngram in ng_dict:
+			ng_dict[ngram] += 1
+		else: # not in dictionary
+			ng_dict[ngram] = 1
+
+	return ng_dict
+"""
+
+def ngram_dictionary(note_list, n):
+	ng_dict = {}
+
+	for start in range(len(note_list)-n):
+		end = start+n
+		ngram = [str(note.midicode) for note in note_list[start:end]]
+		if len(ngram) == 1:
+			print('ALERT ', ngram)
+		history = " ".join(ngram[:-1])
+		continuation = ngram[-1]
+
+		if history in ng_dict:
+			if continuation in ng_dict[history]:
+				ng_dict[history][continuation] += 1
+			else:
+				ng_dict[history][continuation] = 1
+		else:
+			ng_dict[history] = {continuation: 1}
+
+	return ng_dict
+
+
+
+
+def generate_sequence(start_note, seq_length, ngram_dictionary):
+	generated_sequence = [start_note]
+	for i in range(seq_length):
+		generated_sequence.append(next_note(generated_sequence[-1], ngram_dictionary))
+	return generated_sequence
+
+
 if __name__ == '__main__':
-	mid = MidiFile('midifiles/girl.mid')
-	print([str(n) for n in voice_notes(mid)[:100]])
+	#process_midifile('BeautyAndBeast.mid')
+	filepath = 'midifiles/BeautyAndBeast.mid'
+	mid = MidiFile(filepath)
+	all_notes = notes_by_track_number(mid, 3)
+	print(len(all_notes))
+	note_ons = [n for n in all_notes if n.type == 'note_on']
+	print(len(note_ons))
+
+	ndict = ngram_dictionary(note_ons, 2)
+
+	for i in dictionary.sort_descending(ndict):
+		print(i)
+
+	"""
+	for i in range(100):
+		print(next_note('74', ndict))
+	"""
+
+	print(generate_sequence('74',5, ndict))
+
+
+
+
+	
+
