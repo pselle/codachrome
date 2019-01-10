@@ -1,5 +1,36 @@
 console.log("hey!");
 
+
+
+
+
+/* WebAudio API */
+
+// for legacy browsers
+const AudioContext = window.AudioContext || window.webkitAudioContext;
+
+
+// create a new audio context
+const audioCtx = new AudioContext();
+
+// Try making an oscillator
+const osc = audioCtx.createOscillator();
+const gainNode = audioCtx.createGain();
+osc.type = 'sawtooth';
+osc.start();
+
+setInterval(function(){
+    document.getElementById("current-gain").innerText = Math.floor(gainNode.gain.value*100)/100;
+}, 10)
+
+// connect the oscillator to gain node, and the gain node to the audio context
+osc.connect(gainNode);
+gainNode.connect(audioCtx.destination);
+gainNode.gain.value = 1;
+
+
+
+
 // midi stuff
 
 if (navigator.requestMIDIAccess) {
@@ -34,6 +65,8 @@ var keysDown = {
   "Bb": false 
 }
 
+var userInputNotes = [];
+
 // initialize function that runs on page launch
 
 function init(){
@@ -42,7 +75,7 @@ function init(){
 
   enableKeyboardKeys();
   enableSliders();
-
+  enableRequestButton();
 
   var song = [63, 70, 78, 56, 34, 63];
   //playArrayOfNotes(song);
@@ -126,40 +159,31 @@ function enableSliders(){
     });
 }
 
-/* WebAudio API */
 
-// for legacy browsers
-const AudioContext = window.AudioContext || window.webkitAudioContext;
+function enableRequestButton(){
+    document.querySelector("#run").addEventListener("click", function(e){
+        console.log("running!");
+        console.log(userInputNotes);
 
+        if(userInputNotes.length){
 
-// create a new audio context
-const audioCtx = new AudioContext();
+          var url = '/nextnote';
 
-// Try making an oscillator
-const osc = audioCtx.createOscillator();
-const gainNode = audioCtx.createGain();
-osc.type = 'sawtooth';
-osc.start();
-
-setInterval(function(){
-
-  document.getElementById("current-gain").innerText = Math.floor(gainNode.gain.value*100)/100;
-}, 10)
-
-
-
-
-// connect the oscillator to gain node, and the gain node to the audio context
-osc.connect(gainNode);
-gainNode.connect(audioCtx.destination);
-gainNode.gain.value = 0;
-
+          fetch(
+            url, {
+              method: "POST",
+              body: JSON.stringify(userInputNotes)
+            })
+            .then(function(response) {
+              return response.json();
+            })
+        }
+    });
+}
 
 
 
 function playFrequency(freq, velocity){
-
-  console.log("playing ", freq);
 
   // set the pitch
   osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
@@ -167,8 +191,12 @@ function playFrequency(freq, velocity){
   gainNode.gain.value = 0;
 
   if(velocity > 0){
-    gainNode.gain.cancelScheduledValues(audioCtx.currentTime);
-    gainNode.gain.linearRampToValueAtTime(velocity/127, audioCtx.currentTime + attackTime);
+    gainNode.gain.value = 1;
+    console.log(velocity);
+
+    // UNCOMMENT THIS TO USE ENVELOPES! 
+    // gainNode.gain.cancelScheduledValues(audioCtx.currentTime);
+    // gainNode.gain.linearRampToValueAtTime(velocity/127, audioCtx.currentTime + attackTime);
   }
 
 }
@@ -199,7 +227,7 @@ function onMIDISuccess(midiAccess) {
   console.log(midiAccess.outputs);
 
   for (var input of midiAccess.inputs.values())
-      input.onmidimessage = getMIDIMessage;
+    input.onmidimessage = getMIDIMessage;
 }
 
 function onMIDIFailure() {
@@ -215,9 +243,14 @@ function getMIDIMessage(midiMessage) {
     let noteInfo = codeInfo(pitchCode);
   // CALL FUNCTION TO PLAY SOUND ... or do whatever with it :)
       
-    console.log(onOffCode);
+    console.log(onOffCode + ", " + noteInfo.name);
     keysDown[noteInfo.name] = (onOffCode == 144) ? true : false;
 
+
+    if(typeof(pitchCode) != "undefined" &&  onOffCode == 144){
+      userInputNotes.push(pitchCode);
+    }
+    
     playFrequency(noteInfo.frequency, velocity);
 }
 
@@ -279,14 +312,12 @@ function playNoteFromArray(arr){
       
       var noteInfo = codeInfo(arr[0]);
 
-
       getMIDIMessage({data: [144, arr[0], 100]});
 
-      //playFrequency(noteInfo.frequency, 100);     // midi code, velocity;
-
+      // stop playing the note after 300ms
       setTimeout(function(){
         getMIDIMessage({data: [128, arr[0], 0]});
-        //playFrequency(arr[0], 0);
+
       }, 300)
 
 
