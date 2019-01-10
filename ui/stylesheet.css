@@ -1,0 +1,11 @@
+body {
+	background: #e0cb8e;
+}
+
+#synth {
+	display: table;
+    padding: 2rem;
+    border: 2px solid #77642e;
+    border-radius: 0.3rem;
+    box-shadow: 2px 2px 5px #77642e;
+}
