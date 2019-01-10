@@ -15,6 +15,7 @@ fetch('/nextnote', {
 
 from flask import Flask
 from flask import jsonify
+from flask import render_template
 # and import Jamie's prediction model code here!
 
 # Create an instance of Flask
@@ -23,7 +24,26 @@ app = Flask(__name__)
 # Serve the app's home page  -- placeholder!
 @app.route('/', methods=['GET'])
 def homepage():
-    return 'Placeholder for the home page! TODO: serve static files with Flask'
+    return app.send_static_file('index.html')
+
+# Serve the app's home page  -- placeholder!
+@app.route('/stylesheet.css', methods=['GET'])
+def stylesheet():
+    return app.send_static_file('stylesheet.css')
+
+
+# Serve the app's home page  -- placeholder!
+@app.route('/script.js', methods=['GET'])
+def script():
+    return app.send_static_file('script.js')
+
+
+# Serve the app's home page  -- placeholder!
+@app.route('/piano.js', methods=['GET'])
+def piano():
+    return app.send_static_file('piano.js')
+
+
 
 # When client makes a POST request to /nextnote route and provides a note,
 # send back the next note as a response based on the prediction model
