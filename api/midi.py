@@ -116,7 +116,7 @@ def next_note(history, ngram_dict):
 	
 
 """
-def ngram_dictionary(note_list, n):
+def continuation_dictionary(note_list, n):
 	ng_dict = {}
 
 	for start in range(len(note_list)):
@@ -132,7 +132,7 @@ def ngram_dictionary(note_list, n):
 	return ng_dict
 """
 
-def ngram_dictionary(note_list, n):
+def continuation_dictionary(note_list, n):
 	ng_dict = {}
 
 	for start in range(len(note_list)-n):
@@ -156,11 +156,20 @@ def ngram_dictionary(note_list, n):
 
 
 
-def generate_sequence(start_note, seq_length, ngram_dictionary):
-	generated_sequence = [start_note]
+def continuation_from_seed(start_note, seq_length, continuation_dictionary):
+	continuation = [start_note] # initialize sequence
 	for i in range(seq_length):
-		generated_sequence.append(next_note(generated_sequence[-1], ngram_dictionary))
-	return generated_sequence
+		continuation.append(next_note(continuation[-1], continuation_dictionary))
+	return continuation[1:]
+
+# same function, but takes a sequence
+def continuation_from_sequence(seq, continuation_length, continuation_dictionary):
+	return continuation_from_seed(seq[-1])
+
+def continue_sequence(seq, continuation_length, continuation_dictionary):
+	continuation = sequence_from_seed(seq[-1], continuation_length, continuation_dictionary)
+	return seq + continuation
+
 
 
 if __name__ == '__main__':
@@ -172,7 +181,7 @@ if __name__ == '__main__':
 	note_ons = [n for n in all_notes if n.type == 'note_on']
 	print(len(note_ons))
 
-	ndict = ngram_dictionary(note_ons, 2)
+	ndict = continuation_dictionary(note_ons, 2)
 
 	for i in dictionary.sort_descending(ndict):
 		print(i)
@@ -182,7 +191,7 @@ if __name__ == '__main__':
 		print(next_note('74', ndict))
 	"""
 
-	print(generate_sequence('74',5, ndict))
+	print(sequence_from_seed('74',5, ndict))
 
 
 
