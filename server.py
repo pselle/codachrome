@@ -20,6 +20,11 @@ from flask import jsonify
 # Create an instance of Flask
 app = Flask(__name__)
 
+# Serve the app's home page  -- placeholder!
+@app.route('/', methods=['GET'])
+def homepage():
+    return 'Placeholder for the home page! TODO: serve static files with Flask'
+
 # When client makes a POST request to /nextnote route and provides a note,
 # send back the next note as a response based on the prediction model
 @app.route('/nextnote', methods=['POST'])
