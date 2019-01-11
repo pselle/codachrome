@@ -105,3 +105,12 @@ h1 {
 	margin-top: 5rem;
 	display: none;
 }
+
+#instructions {
+	font-weight: 400;
+    color: white;
+    background: rgba(175, 76, 76, 0.5);
+    padding: 0.3rem 1rem;
+    border-radius: 5px;
+    margin: 0.6rem 0 0 0;
+}

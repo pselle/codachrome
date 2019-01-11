@@ -17,7 +17,7 @@ navigator.requestMIDIAccess()
 
 octave = 4;
 
-var keysDown = {
+let keysDown = {
   "C": false,
   "D": false,
   "E": false,
@@ -34,7 +34,7 @@ var keysDown = {
   "Bb": false
 }
 
-var userInputNotes = [];
+let userInputNotes = [];
 
 // initialize function that runs on user-init launch
 
@@ -67,54 +67,43 @@ function initAudio(){
 
 function enableKeyboardKeys(){
 
+    console.log("enabling!");
 
-    var keyboardPitchCodes = {
-      65 : "C",
-      83 : "D",
-      68 : "E",
-      70 : "F",
-      71 : "G",
-      72 : "A",
-      74 : "B",
-      75 : "C",
+    // translate keyboard key code to midi pitch code
+    let keyboardPitchCodes = {
+      "65": 60,
+      "83": 62,
+      "68": 64,
+      "70": 65,
+      "71": 67,
+      "72": 69,
+      "74": 71,
+      "75": 72,
 
-      87 : "Db",
-      69 : "Eb",
-      84 : "Gb",
-      89 : "Ab",
-      85 : "Bb"
+      "87": 61,
+      "69": 63,
+      "84": 66,
+      "89": 68,
+      "85": 70
     }
-
-
 
     document.querySelector("body").addEventListener("keydown", function(e){
 
-        let noteInfo = codeInfo(code);
-      // CALL FUNCTION TO PLAY SOUND ... or do whatever with it :)
-
-      keysDown[noteInfo.name] = (midiMessage.data[0] == 144) ? true : false;
-
-
+      let keyboardCode = e.keyCode;
+      let pitchCode = keyboardPitchCodes[keyboardCode];
+      let noteInfo = codeInfo(pitchCode);
+      
       // ensure that our keydown doesn't keep triggering the same note again and again
-      if(typeof(keyboardPitchCodes[e.keyCode]) != "undefined" && !keysDown[codeInfo(e.keyCode).name].playing){
-          console.log("play " + codeInfo(e.keyCode).note);
-
-          gainNode.connect(audioCtx.destination);
-          noteData[e.keyCode].playing = true;
-
-          // simulating a velocity of 127 - the loudest MIDI value
-          playFrequency(noteData[e.keyCode].freq, 127);
+      if(typeof(pitchCode) != "undefined" && !keysDown[noteInfo.name].playing){
+          getMIDIMessage({data: [144, pitchCode, 100]});
       }
     });
 
     document.querySelector("body").addEventListener("keyup", function(e){
-      if(typeof(keyboardPitchCodes[e.keyCode]) != "undefined"){
-          console.log("stop " + codeInfo(e.keyCode).note);
-          noteData[e.keyCode].playing = false;
-          if(notesBeingPlayed() == 0){
-            gainNode.gain.cancelScheduledValues(audioCtx.currentTime);
-            gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + releaseTime);
-          }
+      let keyboardCode = e.keyCode;
+      let pitchCode = keyboardPitchCodes[keyboardCode];
+      if(typeof(pitchCode) != "undefined"){
+          getMIDIMessage({data: [128, pitchCode, 0]});
       }
     });
 }
@@ -158,10 +147,9 @@ function playFrequency(freq, velocity){
   }
 
 }
-
 function notesBeingPlayed(){
 
-  var notesPressed = 0;
+  let notesPressed = 0;
 
   for(key in noteData){
 
@@ -184,7 +172,7 @@ function onMIDISuccess(midiAccess) {
   console.log(midiAccess.inputs);
   console.log(midiAccess.outputs);
 
-  for (var input of midiAccess.inputs.values())
+  for (let input of midiAccess.inputs.values())
     input.onmidimessage = getMIDIMessage;
 }
 
@@ -193,14 +181,14 @@ function onMIDIFailure() {
 }
 
 function getMIDIMessage(midiMessage) {
-    // console.log(midiMessage.data);
+    console.log(midiMessage.data);
     let onOffCode = midiMessage.data[0];
     let pitchCode = midiMessage.data[1];
     let velocity = midiMessage.data[2]
 
     let noteInfo = codeInfo(pitchCode);
   // CALL FUNCTION TO PLAY SOUND ... or do whatever with it :)
-
+    console.log(noteInfo);
     // console.log(onOffCode + ", " + noteInfo.name);
     keysDown[noteInfo.name] = (onOffCode == 144) ? true : false;
 
@@ -258,7 +246,7 @@ function codeInfo(code) {
 
 function playArrayOfNotes(arr){
 
-  var arrCopy = arr.slice();
+  let arrCopy = arr.slice();
   playNoteFromArray(arrCopy);
 }
 
