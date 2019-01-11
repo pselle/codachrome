@@ -7,10 +7,13 @@
 
     <link rel = "stylesheet" type="text/css" href = "stylesheet.css"></style>
     <link rel="icon" href="icon.png" />
-    
-  </head>  
+
+  </head>
   <body>
     <h1>A Small Synth</h1>
+
+    <button>Click this magic button for things to happen!</button>
+    <small><a href="#chrome-autoplay-discoveries">Why do I have to click a magic button?</a></small>
 
     <div id="synth">
       Attack:
@@ -22,7 +25,7 @@
       <input type="range" min="0" max="1" step="0.1" value="0" class="slider" id="release">
       <span id="release-value">0.0</span>
     </div>
-    
+
     <p>
       Current gain:
 
@@ -35,6 +38,9 @@
     <canvas id = "canvas" height = "300" width="400"></canvas>
 
 
+    <p id="chrome-autoplay-discoveries">
+      Chrome has an autoplay policy that impacts when sound can happen, requiring user interaction. <a href="https://developers.google.com/web/updates/2017/09/autoplay-policy-changes#webaudio">here's their official updates on that</a>. This sounds totally reasonable when you think about how annoying autoplay sound can be, but turns out, MIDI input doesn't count as user interaction! What! Ok! So that's why you need to click the button. <a href="http://blog.szynalski.com/2014/04/web-audio-api/">This post about web audio gotchas was also helpful for us</a>.
+    </p>
 
 
     <script src="script.js" defer></script>
