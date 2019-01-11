@@ -294,6 +294,23 @@ function playNoteFromArray(arr){
   }, 500)
 }
 
+enableButtonExplanation();
+
 document.getElementById('get-goin').addEventListener('click', function() {
+  document.getElementById('user-action-modal').style.display = "none";
   initAudio();
 })
+
+
+/* */
+
+
+
+
+function enableButtonExplanation(){
+  document.getElementById('why-the-button-tho').addEventListener('click', function() {
+    let modal = document.getElementById('chrome-autoplay-discoveries');
+    console.log(modal.style.display);
+    modal.style.display = (modal.style.display == "block") ? "none" : "block";
+  })
+}

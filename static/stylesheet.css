@@ -1,6 +1,27 @@
 body {
-	background: #e0cb8e;
+	background: -webkit-linear-gradient(313deg, rgba(255,0,255,1) 0%, rgba(84,170,84,1) 67%, rgba(0,255,0,1) 100%); /* safari5.1+,chrome10+ */
+	font-family: 'Exo', sans-serif;
+	font-weight: 300;
+
+	color: #1f1f1f;
+	padding: 0;
+	margin: 0;
 }
+
+.container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	height: 100vh;
+
+	flex-grow: 1;
+}
+
+h1 {
+	font-size: 3rem;
+	font-weight: 300;
+}
+
 
 #synth {
 	display: table;
@@ -8,4 +29,55 @@ body {
     border: 2px solid #77642e;
     border-radius: 0.3rem;
     box-shadow: 2px 2px 5px #77642e;
+}
+
+#user-action-modal {
+	width: 600px;
+	border-radius: 10px;
+
+	padding: 2rem 3rem;
+	box-sizing: border-box;
+
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: space-around;
+
+	font-size: 1.8rem;
+    line-height: 1.6;
+
+    background: #e8dcec;
+    box-shadow: 3px 3px 10px rgba(76, 76, 76, 0.87);
+
+    z-index: 2;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%); 
+}
+
+#user-action-modal p {
+	text-align: center;
+}
+
+#why-the-button-tho {
+	font-size: 1rem;
+}
+
+#chrome-autoplay-discoveries {
+	
+	font-size: 1rem;
+	font-weight: 500;
+	display: none;
+}
+
+#user-action-modal #chrome-autoplay-discoveries{
+	text-align: justify;
+}
+
+#get-goin {
+	font-size: 2rem;
+	padding: 1rem 3rem;
+	background: green;
+	border-radius: 10px;
 }

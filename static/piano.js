@@ -25,7 +25,7 @@ function draw(){
 
 
 function drawBackground(){
-    rect(0, 0, WIDTH, HEIGHT, "#000000")
+    rect(0, 0, WIDTH, HEIGHT, "rgba(0,0,0, 0.2)")
 }
 
 function drawKeys(){
@@ -36,7 +36,7 @@ function drawKeys(){
     for(var i = 0; i < 7; i++){
         var xPosition = 8 + (WIDTH/7 * i);
         var notes = ["C", "D", "E", "F", "G", "A", "B"]
-        var color = keysDown[notes[i]] ? "red" : "#ffffff";
+        var color = keysDown[notes[i]] ? "#B738C8" : "#ffffff";
 
         rect(xPosition, 8, WIDTH/7 - 16, HEIGHT - 16, color);
     }
@@ -45,7 +45,7 @@ function drawKeys(){
     for(var j = 0; j < 2; j++){  
         var xPosition = (8 + WIDTH/7/2) + (WIDTH/7 * j);
         var notes = ["Db", "Eb"]
-        var color = keysDown[notes[j]] ? "red" : "#000000";
+        var color = keysDown[notes[j]] ? "#B738C8" : "#000000";
 
         rect(xPosition, 8, WIDTH/7 - 16, HEIGHT/1.5 - 16, color);
     }
@@ -54,7 +54,7 @@ function drawKeys(){
     for(var k = 0; k < 3; k++){
         var notes = ["Gb", "Ab", "Bb"]
         var xPosition = (8 + WIDTH/7* 3 + WIDTH/7/2) + (WIDTH/7 * k);
-        var color = keysDown[notes[k]] ? "red" : "#000000";
+        var color = keysDown[notes[k]] ? "#B738C8" : "#000000";
 
         rect(xPosition, 8, WIDTH/7 - 16, HEIGHT/1.5 - 16, color);
     }
@@ -95,7 +95,7 @@ function rect(x,y,w,h, color) {
     ctx.lineWidth = 8;
     ctx.strokeStyle = "#4d4d4d";
     ctx.fillStyle = color;
-    ctx.stroke();
+    //ctx.stroke();
     ctx.fill();
 }
 
