@@ -61,10 +61,6 @@ function initAudio(){
   console.log('a')
   enableKeyboardKeys();
   enableRequestButton();
-
-  var song = [63, 70, 78, 56, 34, 63];
-  playArrayOfNotes(song, song.length);
-
 }
 
 function enableKeyboardKeys(){
@@ -139,9 +135,10 @@ function enableRequestButton(){
               body: JSON.stringify(userInputNotes)
             })
             .then(function(response) {
-              console.log();
               return response.json();
-            })
+            }).then(function(data) {
+              playArrayOfNotes(data.nextNotes);
+            });
         }
     });
 }
