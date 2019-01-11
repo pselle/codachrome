@@ -123,7 +123,6 @@ function enableRequestButton(){
     document.querySelector("#run").addEventListener("click", function(e){
         console.log("running!");
         console.log(userInputNotes);
-        userInputNotes = [44,66,22]
 
         if(userInputNotes.length){
           fetch(

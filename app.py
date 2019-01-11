@@ -17,7 +17,6 @@ from flask import Flask
 from flask import jsonify
 from flask import request
 from api.midi import full_continued_sequence, gen_ngrams
-# and import Jamie's prediction model code here!
 
 # Create an instance of Flask
 app = Flask(__name__)
