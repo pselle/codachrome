@@ -63,7 +63,7 @@ function initAudio(){
   enableRequestButton();
 
   var song = [63, 70, 78, 56, 34, 63];
-  playArrayOfNotes(song);
+  playArrayOfNotes(song, song.length);
 
 }
 
@@ -195,7 +195,7 @@ function onMIDIFailure() {
 }
 
 function getMIDIMessage(midiMessage) {
-    console.log(midiMessage.data);
+    // console.log(midiMessage.data);
     let onOffCode = midiMessage.data[0];
     let pitchCode = midiMessage.data[1];
     let velocity = midiMessage.data[2]
@@ -203,7 +203,7 @@ function getMIDIMessage(midiMessage) {
     let noteInfo = codeInfo(pitchCode);
   // CALL FUNCTION TO PLAY SOUND ... or do whatever with it :)
 
-    console.log(onOffCode + ", " + noteInfo.name);
+    // console.log(onOffCode + ", " + noteInfo.name);
     keysDown[noteInfo.name] = (onOffCode == 144) ? true : false;
 
 
@@ -264,35 +264,39 @@ function playArrayOfNotes(arr){
   playNoteFromArray(arrCopy);
 }
 
+
+function playNotes(array) {
+  return playNotes(arr.slice(arr.length-1));
+}
+
 function playNoteFromArray(arr){
+  console.log('called with', arr)
+  if (arr.length === 0) {
+    console.log('we done!')
+    return;
+  }
 
   setTimeout(function(){
-
       // simulate a MIDI keyboard
+      const firstItem = arr[0];
 
-      var noteInfo = codeInfo(arr[0]);
-
-      getMIDIMessage({data: [144, arr[0], 100]});
+      getMIDIMessage({data: [144, firstItem, 100]});
 
       // stop playing the note after 300ms
       setTimeout(function(){
-        getMIDIMessage({data: [128, arr[0], 0]});
-
+        getMIDIMessage({data: [128, firstItem, 0]});
       }, 300)
 
-
-
-      arr.shift();
-
       if(arr.length > 0){
-        console.log(arr.length);
-        playNoteFromArray(arr);
+        console.log(arr)
+        const newArray = arr.slice(1);
+        console.log(newArray);
+        return playNoteFromArray(newArray);
       } else {
         console.log("We're out of notes!");
       }
 
   }, 500)
-
 }
 
 document.getElementById('get-goin').addEventListener('click', function() {
