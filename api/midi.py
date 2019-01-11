@@ -107,30 +107,11 @@ def process_midifile(filename):
 # context is a list of Note objects that occurred in sequence
 # return value is a list of tuples linking Notes to scores which represent their likelihood
 def possible_continuations(history, ngram_dict):
-	return dictionary.normalize(ngram_dict[history])
+	if history in ngram_dict:
+		return dictionary.normalize(ngram_dict[history])
+	else:
+		return {}
 
-
-def next_note(history, ngram_dict):
-	return dictionary.stochastic_choice(possible_continuations(history, ngram_dict))[0]
-
-	
-
-"""
-def continuation_dictionary(note_list, n):
-	ng_dict = {}
-
-	for start in range(len(note_list)):
-		end = start+n-1
-
-		ngram = " ".join([str(note.midicode) for note in note_list[start:end+1]])
-
-		if ngram in ng_dict:
-			ng_dict[ngram] += 1
-		else: # not in dictionary
-			ng_dict[ngram] = 1
-
-	return ng_dict
-"""
 
 def continuation_dictionary(note_list, n):
 	ng_dict = {}
@@ -138,8 +119,6 @@ def continuation_dictionary(note_list, n):
 	for start in range(len(note_list)-n):
 		end = start+n
 		ngram = [str(note.midicode) for note in note_list[start:end]]
-		if len(ngram) == 1:
-			print('ALERT ', ngram)
 		history = " ".join(ngram[:-1])
 		continuation = ngram[-1]
 
@@ -153,45 +132,67 @@ def continuation_dictionary(note_list, n):
 
 	return ng_dict
 
+# returns a list of ngram dictionaries
+def ngram_dictionaries(note_list, max_n):
+	return[continuation_dictionary(note_list, n+1) for n in range(max_n)]
 
 
+#### API FUNCTIONS ####
 
-def continuation_from_seed(start_note, seq_length, continuation_dictionary):
-	continuation = [start_note] # initialize sequence
-	for i in range(seq_length):
-		continuation.append(next_note(continuation[-1], continuation_dictionary))
-	return continuation[1:]
+# given a sequence, return a continuation
+def continuation_from_history(history, continuation_length, continuation_dictionary, max_n=2):
+	continuation = history[-1*max_n:] # grab the last n members of the sequence
+	for i in range(continuation_length):
+		next_one = next_note(continuation[-1*max_n:], continuation_dictionary)
+		continuation.append(next_one)
+	return continuation[max_n-1:]
 
-# same function, but takes a sequence
-def continuation_from_sequence(seq, continuation_length, continuation_dictionary):
-	return continuation_from_seed(seq[-1])
+def full_continued_sequence(history, continuation_length, continuation_dictionary):
+	continuation = continuation_from_history(history, continuation_length, continuation_dictionary)
+	return history + continuation
 
-def continue_sequence(seq, continuation_length, continuation_dictionary):
-	continuation = sequence_from_seed(seq[-1], continuation_length, continuation_dictionary)
-	return seq + continuation
 
+def next_note(history, ng_dicts, weights=None):
+
+	# array of strings representing all subets of the history, plus an empty list denoting no history
+	sub_histories = [history[i:] for i in range(len(history))] + [[]]
+
+	continuation_sets = []
+	for sh in sub_histories:
+		ng_size = len(sh)
+		ng_dict = ng_dicts[ng_size]
+		continuation_sets.append(possible_continuations(' '.join(sh), ng_dict))
+
+	# previous 5 lines as one-liner:
+	# continuation_sets = [possible_continuations(' '.join(sh), ng_dicts[len(sh)]) for sh in sub_histories]
+
+	if not weights: # if no weights, assign higher weights for longer ngram dicts
+		weights = [0.5**n for n in range(len(ng_dicts))]
+
+	scored_continuations = dictionary.weighted_union(continuation_sets, weights)
+	return dictionary.stochastic_choice(scored_continuations)[0]
 
 
 if __name__ == '__main__':
-	#process_midifile('BeautyAndBeast.mid')
 	filepath = 'midifiles/BeautyAndBeast.mid'
 	mid = MidiFile(filepath)
 	all_notes = notes_by_track_number(mid, 3)
-	print(len(all_notes))
+	#print(len(all_notes))
 	note_ons = [n for n in all_notes if n.type == 'note_on']
-	print(len(note_ons))
+	#print(len(note_ons))
 
 	ndict = continuation_dictionary(note_ons, 2)
 
-	for i in dictionary.sort_descending(ndict):
-		print(i)
+	ngram_dicts = ngram_dictionaries(note_ons, 3)
+	weights = [2**n for n in range(len(ngram_dicts))]
+	#print(ngram_dicts[1].keys())
+	#print(ngram_dicts[0].values())
+	#print(weights)
 
-	"""
-	for i in range(100):
-		print(next_note('74', ndict))
-	"""
+	print(continuation_from_history(['74'],5, ngram_dicts))
 
-	print(sequence_from_seed('74',5, ndict))
+	print(full_continued_sequence(['60','62','63'],5,ngram_dicts))
+
 
 
 
