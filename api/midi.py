@@ -1,7 +1,7 @@
 import mido
 from mido import Message
 from mido import MidiFile
-import dictionary
+from . import dictionary
 import random
 
 
@@ -153,7 +153,6 @@ def full_continued_sequence(history, continuation_length, continuation_dictionar
 
 
 def next_note(history, ng_dicts, weights=None):
-
 	# array of strings representing all subets of the history, plus an empty list denoting no history
 	sub_histories = [history[i:] for i in range(len(history))] + [[]]
 
@@ -161,7 +160,7 @@ def next_note(history, ng_dicts, weights=None):
 	for sh in sub_histories:
 		ng_size = len(sh)
 		ng_dict = ng_dicts[ng_size]
-		continuation_sets.append(possible_continuations(' '.join(sh), ng_dict))
+		continuation_sets.append(possible_continuations(' '.join(str(i) for i in sh), ng_dict))
 
 	# previous 5 lines as one-liner:
 	# continuation_sets = [possible_continuations(' '.join(sh), ng_dicts[len(sh)]) for sh in sub_histories]
@@ -171,6 +170,12 @@ def next_note(history, ng_dicts, weights=None):
 
 	scored_continuations = dictionary.weighted_union(continuation_sets, weights)
 	return dictionary.stochastic_choice(scored_continuations)[0]
+
+def gen_ngrams(filepath):
+	mid = MidiFile(filepath)
+	all_notes = notes_by_track_number(mid, 3)
+	note_ons = [n for n in all_notes if n.type == 'note_on']
+	return ngram_dictionaries(note_ons, 3)
 
 
 if __name__ == '__main__':
@@ -192,10 +197,3 @@ if __name__ == '__main__':
 	print(continuation_from_history(['74'],5, ngram_dicts))
 
 	print(full_continued_sequence(['60','62','63'],5,ngram_dicts))
-
-
-
-
-
-	
-

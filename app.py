@@ -16,10 +16,14 @@ fetch('/nextnote', {
 from flask import Flask
 from flask import jsonify
 from flask import request
+from api.midi import full_continued_sequence, gen_ngrams
 # and import Jamie's prediction model code here!
 
 # Create an instance of Flask
 app = Flask(__name__)
+
+# generate ngrams on server start
+ngram_dicts = gen_ngrams('api/midifiles/BeautyAndBeast.mid')
 
 # Serve the app's home page  -- placeholder!
 @app.route('/', methods=['GET'])
@@ -49,21 +53,5 @@ def piano():
 def send_next_note():
     return jsonify({'nextNotes': choose_next_notes(request.json)})
 
-# Placeholder!
 def choose_next_notes(note_codes):
-   return [n+5 for n in note_codes]
-
-# A COUPLE NOTES ON PYTHON AND FLASK:
-# @app.route('/nextnote') is a function decorator, which modifies the function
-# defined below it.
-
-# Example:
-
-# @app.route('/nextnote')
-# def hello():
-#   return "Hello world"
-
-# This tells Flask to run the hello() function whenever the client requests
-# the URL of the app ending with /nextnote (example: localhost/nextnote).
-# Then Flask takes the return value of hello() and sends it to the client
-# as its response, so the client will receive "Hello" as the response body!
+   return full_continued_sequence(note_codes,5,ngram_dicts)
