@@ -1,6 +1,8 @@
 # Codachrome
 
-Give us midi and we give you midi back! Never play alone
+:notes: :musical_keyboard: :musical_score: Give us midi and we give you midi back! Never play alone. :musical_keyboard: :microphone: :musical_note: 
+
+:sparkles: *This project was created by [jbrew](https://github.com/jbrew), [maximforever](https://github.com/maximforever), [learningnerd](https://github.com/learningnerd), and [pselle](https://github.com/pselle) as a collaboration at [the Recurse Center](https://www.recurse.com).*
 
 ## Setup for local development
 
@@ -23,5 +25,3 @@ Give us midi and we give you midi back! Never play alone
 
   1. You'll see something like `Running on http://127.0.0.1:5000/` appear in your terminal. Navigate to that URL in your web browser to see the app!  
   <br/>*Or you can use the URL `localhost:5000` as a shortcut.*
-
-
