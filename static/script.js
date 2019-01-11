@@ -127,17 +127,19 @@ function enableRequestButton(){
     document.querySelector("#run").addEventListener("click", function(e){
         console.log("running!");
         console.log(userInputNotes);
+        userInputNotes = [44,66,22]
 
         if(userInputNotes.length){
-
-          var url = '/nextnote';
-
           fetch(
-            url, {
+            '/nextnote', {
               method: "POST",
+              headers: {
+                'Content-Type':'application/json'
+              },
               body: JSON.stringify(userInputNotes)
             })
             .then(function(response) {
+              console.log();
               return response.json();
             })
         }
@@ -271,10 +273,6 @@ function playNotes(array) {
 
 function playNoteFromArray(arr){
   console.log('called with', arr)
-  if (arr.length === 0) {
-    console.log('we done!')
-    return;
-  }
 
   setTimeout(function(){
       // simulate a MIDI keyboard

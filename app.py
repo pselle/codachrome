@@ -15,7 +15,7 @@ fetch('/nextnote', {
 
 from flask import Flask
 from flask import jsonify
-from flask import render_template
+from flask import request
 # and import Jamie's prediction model code here!
 
 # Create an instance of Flask
@@ -43,17 +43,15 @@ def script():
 def piano():
     return app.send_static_file('piano.js')
 
-
-
 # When client makes a POST request to /nextnote route and provides a note,
 # send back the next note as a response based on the prediction model
 @app.route('/nextnote', methods=['POST'])
 def send_next_note():
-    return jsonify({'nextNote': choose_next_note(65)})
+    return jsonify({'nextNotes': choose_next_notes(request.json)})
 
 # Placeholder!
-def choose_next_note(note_code):
-   return 55 
+def choose_next_notes(note_codes):
+   return [n+5 for n in note_codes]
 
 # A COUPLE NOTES ON PYTHON AND FLASK:
 # @app.route('/nextnote') is a function decorator, which modifies the function
@@ -69,4 +67,3 @@ def choose_next_note(note_code):
 # the URL of the app ending with /nextnote (example: localhost/nextnote).
 # Then Flask takes the return value of hello() and sends it to the client
 # as its response, so the client will receive "Hello" as the response body!
-
