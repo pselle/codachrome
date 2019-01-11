@@ -56,7 +56,7 @@ h1 {
     line-height: 1.6;
 
     background: #e8dcec;
-    box-shadow: 3px 3px 10px rgba(76, 76, 76, 0.87);
+    box-shadow: 3px 3px 40px rgba(0, 0, 0, 0.9);
 
     z-index: 2;
     position: absolute;
