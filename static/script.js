@@ -10,6 +10,8 @@ if (navigator.requestMIDIAccess) {
     console.log('WebMIDI is not supported in this browser.');
 }
 
+enableButtonExplanation();
+
 navigator.requestMIDIAccess()
     .then(onMIDISuccess, onMIDIFailure);
 
@@ -87,12 +89,10 @@ function enableKeyboardKeys(){
 
     document.querySelector("body").addEventListener("keydown", function(e){
 
-
         let noteInfo = codeInfo(code);
       // CALL FUNCTION TO PLAY SOUND ... or do whatever with it :)
 
-        keysDown[noteInfo.name] = (midiMessage.data[0] == 144) ? true : false;
-
+      keysDown[noteInfo.name] = (midiMessage.data[0] == 144) ? true : false;
 
 
       // ensure that our keydown doesn't keep triggering the same note again and again
@@ -293,12 +293,14 @@ function playNoteFromArray(arr){
   }, 500)
 }
 
-enableButtonExplanation();
+
 
 document.getElementById('get-goin').addEventListener('click', function() {
   document.getElementById('user-action-modal').style.display = "none";
   initAudio();
-})
+
+  document.getElementById('run').style.display = "block";
+});
 
 
 /* */
@@ -307,9 +309,13 @@ document.getElementById('get-goin').addEventListener('click', function() {
 
 
 function enableButtonExplanation(){
+
+  console.log("enabling");
   document.getElementById('why-the-button-tho').addEventListener('click', function() {
+    
     let modal = document.getElementById('chrome-autoplay-discoveries');
     console.log(modal.style.display);
     modal.style.display = (modal.style.display == "block") ? "none" : "block";
+
   })
 }

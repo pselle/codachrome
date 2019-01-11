@@ -8,6 +8,10 @@ body {
 	margin: 0;
 }
 
+
+button:focus {outline:0;}
+
+
 .container {
 	display: flex;
 	flex-direction: column;
@@ -99,4 +103,5 @@ h1 {
 
 #run {
 	margin-top: 5rem;
+	display: none;
 }
