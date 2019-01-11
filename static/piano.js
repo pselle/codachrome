@@ -38,7 +38,7 @@ function drawKeys(){
         var notes = ["C", "D", "E", "F", "G", "A", "B"]
         var color = keysDown[notes[i]] ? "#B738C8" : "#ffffff";
 
-        rect(xPosition, 8, WIDTH/7 - 16, HEIGHT - 16, color);
+        roundRect(xPosition, 8, WIDTH/7 - 16, HEIGHT - 16, 8, color);
     }
 
     // Db, Eb
@@ -47,7 +47,7 @@ function drawKeys(){
         var notes = ["Db", "Eb"]
         var color = keysDown[notes[j]] ? "#B738C8" : "#000000";
 
-        rect(xPosition, 8, WIDTH/7 - 16, HEIGHT/1.5 - 16, color);
+        roundRect(xPosition, 8, WIDTH/7 - 16, HEIGHT/1.5 - 16, 8, color);
     }
 
     // Gb, Ab, Bb
@@ -56,7 +56,7 @@ function drawKeys(){
         var xPosition = (8 + WIDTH/7* 3 + WIDTH/7/2) + (WIDTH/7 * k);
         var color = keysDown[notes[k]] ? "#B738C8" : "#000000";
 
-        rect(xPosition, 8, WIDTH/7 - 16, HEIGHT/1.5 - 16, color);
+        roundRect(xPosition, 8, WIDTH/7 - 16, HEIGHT/1.5 - 16, 8, color);
     }
 
 }
@@ -98,6 +98,27 @@ function rect(x,y,w,h, color) {
     //ctx.stroke();
     ctx.fill();
 }
+
+function roundRect(x, y, w, h, r, color) {
+  if (w < 2 * r) r = w / 2;
+  if (h < 2 * r) r = h / 2;
+  ctx.beginPath();
+  ctx.moveTo(x, y);
+  ctx.arcTo(x+w, y,   x+w, y+h, 0);
+  ctx.arcTo(x+w, y+h, x,   y+h, r);
+  ctx.arcTo(x,   y+h, x,   y,   r);
+  ctx.arcTo(x,   y,   x+w, y,   0);
+  ctx.closePath();
+
+  ctx.fillStyle = color;
+  ctx.fill();
+}
+
+
+
+
+
+
 
 function text(text, x, y, size, color, centerAlign){
     ctx.font =  size + "px Arial";

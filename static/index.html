@@ -18,20 +18,17 @@
     <div class = "container">
       <h1>CODACHROME</h1>
 
-      
+      <canvas id = "canvas" height = "300" width="500"></canvas>
+
+      <button class="big-button" id = "run">Get moar notes!</button>
       
 
-      <p>
-        <button id = "run">Get moar notes!</button>
-      </p>
-
-      <canvas id = "canvas" height = "300" width="400"></canvas>
 
 
       <div id = "user-action-modal">
         <p> Codachrome is a little tool that helps you find the next notes to play. Also, it only works on Chrome!</p>
 
-        <button id="get-goin">That sounds awesome!</button>
+        <button class="big-button" id="get-goin">Let's make music!</button>
         <small><a id="why-the-button-tho" href="#chrome-autoplay-discoveries">Why do I have to click a magic button?</a></small>
         <p id="chrome-autoplay-discoveries">
           Chrome has an autoplay policy that impacts when sound can happen, requiring user interaction. <a href="https://developers.google.com/web/updates/2017/09/autoplay-policy-changes#webaudio">Here are their official updates on that</a>. This sounds totally reasonable when you think about how annoying autoplay sound can be, but turns out, MIDI input doesn't count as user interaction! What! Ok! So that's why you need to click the button. <a href="http://blog.szynalski.com/2014/04/web-audio-api/">This post about web audio gotchas was also helpful for us</a>.

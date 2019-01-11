@@ -18,8 +18,13 @@ body {
 }
 
 h1 {
-	font-size: 3rem;
-	font-weight: 300;
+	letter-spacing: 8px;
+    font-size: 4rem;
+    font-weight: 300;
+    color: #eaeaea;
+    padding: 0 1rem;
+    border-radius: 10px;
+    text-shadow: 0 0 27px #212121;
 }
 
 
@@ -75,9 +80,23 @@ h1 {
 	text-align: justify;
 }
 
-#get-goin {
+.big-button {
 	font-size: 2rem;
-	padding: 1rem 3rem;
-	background: green;
-	border-radius: 10px;
+    padding: 1rem 3rem;
+    background: -webkit-linear-gradient(90deg, #094d5a 0%, #0f5c6b 100%);
+    border-radius: 10px;
+    color: white;
+    box-shadow: 0 3px 10px #000000;
+    border: none;
+    font-weight: 300;
+    font-family: 'Exo', sans-serif;
+}
+
+.big-button:hover {
+	cursor: pointer;
+    background: #063740;
+}
+
+#run {
+	margin-top: 5rem;
 }
