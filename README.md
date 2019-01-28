@@ -1,8 +1,10 @@
 # Codachrome
 
-:notes: :musical_keyboard: :musical_score: Give us midi and we give you midi back! Never play alone. :musical_keyboard: :microphone: :musical_note: 
+:notes: :musical_keyboard: :musical_score: Give us midi and we give you midi back! Never play alone. :musical_keyboard: :microphone: :musical_note:
 
 :sparkles: *This project was created by [jbrew](https://github.com/jbrew), [maximforever](https://github.com/maximforever), [learningnerd](https://github.com/learningnerd), and [pselle](https://github.com/pselle) as a collaboration at [the Recurse Center](https://www.recurse.com).*
+
+[Check out the demo!](http://codachrome.herokuapp.com/)
 
 ## Setup for local development
 
@@ -12,7 +14,7 @@
 
   1. In your terminal, go into the newly-created folder for this repo with `cd codachrome`.  
 <br/>*To verify that you're in the correct folder, you can use the command `pwd` (print working directory)*
-  
+
   1. Create a virtual environment with this command: `python3 -m venv venv` on Mac, or `py -3 -m venv venv` on Windows.  
 <br/>***Note:*** *This lets you use different versions of Python and Python modules for each of your Python projects separately, so they don't conflict with each other.*
 
