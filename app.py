@@ -12,7 +12,7 @@ fetch('/nextnote', {
 }).then(response => response.json()).then(console.log);
 '''
 ################################################################################
-
+from waitress import serve
 from flask import Flask
 from flask import jsonify
 from flask import request
@@ -54,3 +54,6 @@ def send_next_note():
 
 def choose_next_notes(note_codes):
    return full_continued_sequence(note_codes,5,ngram_dicts)
+
+
+serve(app, host='0.0.0.0', port=8080)
