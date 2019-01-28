@@ -6,4 +6,5 @@ MarkupSafe==1.1.0
 mido==1.2.9
 numpy==1.15.4
 python-dotenv==0.10.1
+waitress==1.2.1
 Werkzeug==0.14.1
