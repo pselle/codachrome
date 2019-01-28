@@ -13,10 +13,10 @@ fetch('/nextnote', {
 '''
 ################################################################################
 from waitress import serve
-from flask import Flask
-from flask import jsonify
-from flask import request
+from flask import Flask, jsonify, request
 from api.midi import full_continued_sequence, gen_ngrams
+
+import os
 
 # Create an instance of Flask
 app = Flask(__name__)
@@ -56,4 +56,4 @@ def choose_next_notes(note_codes):
    return full_continued_sequence(note_codes,5,ngram_dicts)
 
 
-serve(app, host='0.0.0.0', port=8080)
+serve(app, host='0.0.0.0', port=os.environ.get('PORT'))
