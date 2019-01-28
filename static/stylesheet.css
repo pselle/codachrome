@@ -106,7 +106,7 @@ h1 {
 	display: none;
 }
 
-#instructions {
+#instructions, #src-link {
 	font-weight: 400;
     color: white;
     background: rgba(175, 76, 76, 0.5);
