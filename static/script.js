@@ -1,4 +1,4 @@
-let audioCtx, osc, gainNode;
+let audioCtx, oscArray;
 
 // midi stuff
 
@@ -47,17 +47,24 @@ function initAudio(){
   // create a new audio context
   audioCtx = new AudioContext();
 
-  // Try making an oscillator
-  osc = audioCtx.createOscillator();
-  gainNode = audioCtx.createGain();
-  osc.type = 'sawtooth';
-  osc.start();
+  // create an array with as many oscillators as there are MIDI notes
+  oscArray = {};
+  for (let i=0; i<127; i++) {
+    var newOsc = audioCtx.createOscillator();
+    var newGainNode = audioCtx.createGain();
+    newOsc.type = 'sawtooth';
+    newOsc.start();
+    newOsc.connect(newGainNode);
 
+    let noteInfo = codeInfo(i);
+    freq = noteInfo['frequency'];
+    newOsc.frequency.setValueAtTime(freq, audioCtx.currentTime);
 
-  // connect the oscillator to gain node, and the gain node to the audio context
-  osc.connect(gainNode);
-  gainNode.connect(audioCtx.destination);
-  gainNode.gain.value = 0; // start silently
+    newGainNode.connect(audioCtx.destination);
+    newGainNode.gain.value = 0; // all notes initialized at silence
+    oscArray[i.toString()] = {'osc': newOsc, 'gainNode': newGainNode}
+  }
+
 
   // enable key listeners
   console.log('a')
@@ -79,7 +86,6 @@ function enableKeyboardKeys(){
       "72": 69,
       "74": 71,
       "75": 72,
-
       "87": 61,
       "69": 63,
       "84": 66,
@@ -133,18 +139,21 @@ function enableRequestButton(){
 
 
 
-function playFrequency(freq, velocity){
+function playNote(code, velocity){
 
   // set the pitch
-  osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-
-  gainNode.gain.value = 0;
+   gn = oscArray[code.toString()]['gainNode'];
 
   if(velocity > 0){
-    gainNode.gain.value = 1;
-    console.log(velocity);
-
+    console.log('observed', velocity/127);
+    gn.gain.value = velocity/127;
+    //console.log(velocity);
   }
+  else {
+    gn.gain.value = 0;
+  }
+
+  
 
 }
 function notesBeingPlayed(){
@@ -197,8 +206,11 @@ function getMIDIMessage(midiMessage) {
       userInputNotes.push(pitchCode);
     }
 
-    playFrequency(noteInfo.frequency, velocity);
+    playNote(pitchCode, velocity);
 }
+
+
+
 
 
 /* --------- */
